@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:async';
 
 class SpeedMatch extends StatefulWidget {
-    _SpeedMatch createState() => _SpeedMatch();
+  _SpeedMatch createState() => _SpeedMatch();
 }
 
 class _SpeedMatch extends State<SpeedMatch> {
@@ -31,12 +31,15 @@ class _SpeedMatch extends State<SpeedMatch> {
     for (int i = 0; i < pics.length; i++) {
       icons[i] = Icon(pics[i], size: 50);
     }
-    this.startTimer();
+    startTimer();
   }
 
   void timerCallback() {
-    this.timer.cancel();
-    this.failureDialog("You took just a little too long this time, try to be faster next time!");
+    if (this.previous != null) {
+      this.timer.cancel();
+      this.failureDialog(
+          "You took just a little too long this time, try to be faster next time!");
+    }
   }
 
   void failureDialog(String text) {
@@ -60,14 +63,14 @@ class _SpeedMatch extends State<SpeedMatch> {
       setState(() {
         this.score = 0;
         this.previous = null;
-        this.current = Icon(Icons.play_arrow, size: 50); 
+        this.current = Icon(Icons.play_arrow, size: 50);
         startTimer();
       });
     });
   }
 
   void startTimer() {
-    Duration duration = new Duration(milliseconds: 1000 - (score*5));
+    Duration duration = new Duration(milliseconds: 1000 - (score * 5));
     this.timer = new Timer(duration, this.timerCallback);
   }
 
@@ -83,7 +86,7 @@ class _SpeedMatch extends State<SpeedMatch> {
     if (((this.previous == this.current) == equal) || (this.previous == null)) {
       this.score++;
       updateIcon();
-
+      startTimer();
     } else {
       String text = "";
       if (equal) {
@@ -93,55 +96,53 @@ class _SpeedMatch extends State<SpeedMatch> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Expanded (
-          flex: 5,
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Is this picture the same as before?",
-              style: Theme.of(context).textTheme.headline5,
-              textAlign: TextAlign.center,
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Expanded(
+              flex: 5,
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Is this picture the same as before?",
+                  style: Theme.of(context).textTheme.headline5,
+                  textAlign: TextAlign.center,
+                ),
+              )),
+          Expanded(
+            flex: 85,
+            child: Align(
+              child: this.current,
+              alignment: Alignment.center,
             ),
-          )
-        ),
-        Expanded (
-          flex: 85,
-          child: Align(
-            child: this.current,
-            alignment: Alignment.center,
           ),
-        ),
-        Expanded (
-          flex: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Expanded (
-                  child: RaisedButton(
+          Expanded(
+              flex: 10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Expanded(
+                      child: RaisedButton(
                     child: Text("No", style: TextStyle(color: Colors.white)),
-                    onPressed: () {this.check(false);},
+                    onPressed: () {
+                      this.check(false);
+                    },
                     color: Colors.blue,
-                  )
-              ),
-              Expanded (
-                  child: RaisedButton(
+                  )),
+                  Expanded(
+                      child: RaisedButton(
                     child: Text("Yes", style: TextStyle(color: Colors.white)),
-                    onPressed: () {this.check(true);},
+                    onPressed: () {
+                      this.check(true);
+                    },
                     color: Colors.blue,
-                  )
-              ),
-            ],
-          )
-        ),
-      ]
-    );
+                  )),
+                ],
+              )),
+        ]);
   }
 }
